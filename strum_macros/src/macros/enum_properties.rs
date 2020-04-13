@@ -56,17 +56,17 @@ pub fn enum_properties_inner(ast: &syn::DeriveInput) -> TokenStream {
             let key = key.segments.last().unwrap().ident.to_string();
             match value {
                 Str(ref s, ..) => {
-                    string_arms.push(quote! { #key => ::std::option::Option::Some( #s )})
+                    string_arms.push(quote! { #key => ::core::option::Option::Some( #s )})
                 }
-                Bool(b) => bool_arms.push(quote! { #key => ::std::option::Option::Some( #b )}),
-                Int(i, ..) => num_arms.push(quote! { #key => ::std::option::Option::Some( #i )}),
+                Bool(b) => bool_arms.push(quote! { #key => ::core::option::Option::Some( #b )}),
+                Int(i, ..) => num_arms.push(quote! { #key => ::core::option::Option::Some( #i )}),
                 _ => {}
             }
         }
 
-        string_arms.push(quote! { _ => ::std::option::Option::None });
-        bool_arms.push(quote! { _ => ::std::option::Option::None });
-        num_arms.push(quote! { _ => ::std::option::Option::None });
+        string_arms.push(quote! { _ => ::core::option::Option::None });
+        bool_arms.push(quote! { _ => ::core::option::Option::None });
+        num_arms.push(quote! { _ => ::core::option::Option::None });
 
         arms.push(quote! {
             &#name::#ident #params => {
@@ -78,12 +78,12 @@ pub fn enum_properties_inner(ast: &syn::DeriveInput) -> TokenStream {
     }
 
     if arms.len() < variants.len() {
-        arms.push(quote! { _ => ::std::option::Option::None });
+        arms.push(quote! { _ => ::core::option::Option::None });
     }
 
     quote! {
         impl #impl_generics ::strum::EnumProperty for #name #ty_generics #where_clause {
-            fn get_str(&self, prop: &str) -> ::std::option::Option<&'static str> {
+            fn get_str(&self, prop: &str) -> ::core::option::Option<&'static str> {
                 match self {
                     #(#arms),*
                 }

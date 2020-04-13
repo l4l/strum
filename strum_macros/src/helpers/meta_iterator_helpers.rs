@@ -3,7 +3,7 @@ use super::MetaListHelpers;
 use syn::Meta;
 
 pub trait MetaIteratorHelpers {
-    fn find_attribute(&self, attr: &str) -> std::vec::IntoIter<&Meta>;
+    fn find_attribute(&self, attr: &str) -> alloc::vec::IntoIter<&Meta>;
     fn find_properties(&self, attr: &str, prop: &str) -> Vec<String>;
 
     fn find_unique_property(&self, attr: &str, prop: &str) -> Option<String> {
@@ -30,7 +30,7 @@ impl<T> MetaIteratorHelpers for [T]
 where
     T: std::borrow::Borrow<Meta>,
 {
-    fn find_attribute(&self, attr: &str) -> std::vec::IntoIter<&Meta> {
+    fn find_attribute(&self, attr: &str) -> alloc::vec::IntoIter<&Meta> {
         self.iter()
             .filter_map(|meta| meta.borrow().try_metalist())
             .filter(|list| list.path.is_ident(attr))

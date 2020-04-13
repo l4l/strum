@@ -58,6 +58,12 @@
 //! [EnumDiscriminants]: https://github.com/Peternator7/strum/wiki/Derive-EnumDiscriminants
 //! [EnumCount]: https://github.com/Peternator7/strum/wiki/Derive-EnumCount
 
+
+#![cfg_attr(feature = "no_std", no_std)]
+
+#[cfg(feature = "no_std")]
+extern crate alloc;
+
 /// The ParseError enum is a collection of all the possible reasons
 /// an enum can fail to parse from a string.
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Hash)]
@@ -65,8 +71,8 @@ pub enum ParseError {
     VariantNotFound,
 }
 
-impl std::fmt::Display for ParseError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
+impl core::fmt::Display for ParseError {
+    fn fmt(&self, f: &mut core::fmt::Formatter) -> Result<(), core::fmt::Error> {
         // We could use our macro here, but this way we don't take a dependency on the
         // macros crate.
         match self {
@@ -75,6 +81,7 @@ impl std::fmt::Display for ParseError {
     }
 }
 
+#[cfg(not(feature = "no_std"))]
 impl std::error::Error for ParseError {
     fn description(&self) -> &str {
         match self {

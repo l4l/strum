@@ -19,7 +19,7 @@ pub fn from_string_inner(ast: &syn::DeriveInput) -> TokenStream {
 
     let mut has_default = false;
     let mut default =
-        quote! { _ => ::std::result::Result::Err(::strum::ParseError::VariantNotFound) };
+        quote! { _ => ::core::result::Result::Err(::strum::ParseError::VariantNotFound) };
     let mut arms = Vec::new();
     for variant in variants {
         use syn::Fields::*;
@@ -52,7 +52,7 @@ pub fn from_string_inner(ast: &syn::DeriveInput) -> TokenStream {
                 }
 
                 default = quote! {
-                    default => ::std::result::Result::Ok(#name::#ident (default.into()))
+                    default => ::core::result::Result::Ok(#name::#ident (default.into()))
                 };
             } else {
                 panic!("Default only works on unit structs with a single String parameter");
@@ -71,7 +71,7 @@ pub fn from_string_inner(ast: &syn::DeriveInput) -> TokenStream {
             Unit => quote! {},
             Unnamed(ref fields) => {
                 let defaults =
-                    ::std::iter::repeat(quote!(Default::default())).take(fields.unnamed.len());
+                    ::core::iter::repeat(quote!(Default::default())).take(fields.unnamed.len());
                 quote! { (#(#defaults),*) }
             }
             Named(ref fields) => {
@@ -83,15 +83,15 @@ pub fn from_string_inner(ast: &syn::DeriveInput) -> TokenStream {
             }
         };
 
-        arms.push(quote! { #(#attrs)|* => ::std::result::Result::Ok(#name::#ident #params) });
+        arms.push(quote! { #(#attrs)|* => ::core::result::Result::Ok(#name::#ident #params) });
     }
 
     arms.push(default);
 
     quote! {
-        impl #impl_generics ::std::str::FromStr for #name #ty_generics #where_clause {
+        impl #impl_generics ::core::str::FromStr for #name #ty_generics #where_clause {
             type Err = ::strum::ParseError;
-            fn from_str(s: &str) -> ::std::result::Result< #name #ty_generics , Self::Err> {
+            fn from_str(s: &str) -> ::core::result::Result< #name #ty_generics , Self::Err> {
                 match s {
                     #(#arms),*
                 }

@@ -47,7 +47,7 @@ pub fn to_string_inner(ast: &syn::DeriveInput) -> TokenStream {
             Named(..) => quote! { {..} },
         };
 
-        arms.push(quote! { #name::#ident #params => ::std::string::String::from(#output) });
+        arms.push(quote! { #name::#ident #params => ::core::string::String::from(#output) });
     }
 
     if arms.len() < variants.len() {
@@ -55,8 +55,8 @@ pub fn to_string_inner(ast: &syn::DeriveInput) -> TokenStream {
     }
 
     quote! {
-        impl #impl_generics ::std::string::ToString for #name #ty_generics #where_clause {
-            fn to_string(&self) -> ::std::string::String {
+        impl #impl_generics ::core::string::ToString for #name #ty_generics #where_clause {
+            fn to_string(&self) -> ::core::string::String {
                 match *self {
                     #(#arms),*
                 }

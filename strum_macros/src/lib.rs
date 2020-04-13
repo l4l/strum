@@ -9,6 +9,8 @@
 
 #![recursion_limit = "128"]
 
+extern crate alloc;
+extern crate core;
 extern crate heck;
 #[macro_use]
 extern crate syn;
